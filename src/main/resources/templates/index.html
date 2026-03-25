@@ -5,21 +5,9 @@
     <title>LangLearn</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="">
-
-    <h1>LangLearn - Jakub Kasprzak</h1>
-
-    <div class="grid gap-4">
-        <div th:each="f : ${fiszki}">
-            
-            <div>Słowo:</div>
-            <div th:text="${f.german_word}"></div>
-            
-            <div>Tłumaczenie:</div>
-            <div th:text="${f.polish_word}"></div>
-            
-        </div>
-    </div>
-
+<body>
+    <header class="flex justify-center">
+        <h1 class="text-3xl font-bold padding-[8px]">Welcome back - <span th:text="${username}">Użytkowniku</span>!</h1>
+    </header>
 </body>
 </html>

@@ -1,10 +1,14 @@
 package com.jakkas.langlearn;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+
+import com.jakkas.langlearn.repository.FlashcardRepository;
+import com.jakkas.langlearn.repository.UsersRepository;
+import com.jakkas.langlearn.service.UsersService;
 
 @SpringBootApplication
 @Controller
@@ -19,9 +23,15 @@ public class LangLearnApplication {
         SpringApplication.run(LangLearnApplication.class, args);
     }
 
-    @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("fiszki", repository.findAll());
-        return "index";
+
+    //create an test account
+    @Bean
+    public CommandLineRunner initData(UsersService usersService, UsersRepository repository) {
+        return args -> {
+            if (repository.findByUsername("jakk").isEmpty()) {
+                usersService.registerUser("jakk", "kuba123");
+                System.out.println("Test account created succesfully: jakk / kuba123");
+            }
+        };
     }
 }
