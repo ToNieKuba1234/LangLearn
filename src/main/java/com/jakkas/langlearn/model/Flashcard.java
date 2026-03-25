@@ -1,4 +1,4 @@
-package com.jakkas.langlearn;
+package com.jakkas.langlearn.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

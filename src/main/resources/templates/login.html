@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Logowanie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <section class="">
+        <h2 class="text-xl">Zaloguj się</h2>
+        <form th:action="@{/process-login}" method="post">
+            <div>
+                <label>Użytkownik:</label>
+                <input type="text" name="username" class="border-[1px] border-black" placeholder="username"/>
+            </div>
+            <div>
+                <label>Hasło:</label>
+                <input type="password" name="password" class="border-[1px] border-black" placeholder="password"/>
+            </div>
+            <button type="submit">Zaloguj</button>
+        </form>
+    </section>
+</body>
+</html>
