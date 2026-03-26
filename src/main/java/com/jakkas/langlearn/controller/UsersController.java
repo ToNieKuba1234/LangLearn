@@ -1,7 +1,12 @@
 package com.jakkas.langlearn.controller;
 
+import com.jakkas.langlearn.model.Users;
+import com.jakkas.langlearn.repository.UsersRepository;
 import com.jakkas.langlearn.service.UsersService;
 import jakarta.servlet.http.HttpSession;
+
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +22,8 @@ import java.util.ArrayList;
 @Controller
 public class UsersController {
 
+    @Autowired
+    private UsersRepository usersRepository;
     private final UsersService usersService;
 
     public UsersController(UsersService usersService) {
@@ -68,9 +75,14 @@ public class UsersController {
 
     @GetMapping("/")
     public String homePage(Model model) {
-        //get username
+        //gets username from the currentcontext of SecuirtyContextHolder
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("username", currentUsername);
+        
+        Users user = usersRepository.findByUsername(currentUsername).orElseThrow(() -> new RuntimeException("User not found"));
+
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("trophies", user.getTrophies());
+
         return "index";
     }
 }

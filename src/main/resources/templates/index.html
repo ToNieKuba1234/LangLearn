@@ -6,8 +6,9 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <header class="flex justify-center">
-        <h1 class="text-3xl font-bold padding-[8px]">Welcome back - <span th:text="${username}">Użytkowniku</span>!</h1>
+    <header class="flex justify-center flex-col">
+        <h1 class="text-3xl font-bold padding-[8px]">Welcome back - <span th:text="${username}">User</span>!</h1>
+        <p>You have <span class="font-bold" th:text="${trophies}">?</span>trophies</p>
     </header>
 </body>
 </html>
