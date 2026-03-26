@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Logowanie</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     <section class="">
-        <h2 class="text-xl">Zaloguj się</h2>
+        <h2 class="font-bold">Zaloguj się</h2>
         <form th:action="@{/process-login}" method="post">
             <div>
                 <label>Użytkownik:</label>
