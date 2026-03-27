@@ -6,19 +6,15 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <section class="">
-        <h2 class="font-bold">Zaloguj się</h2>
-        <form th:action="@{/process-login}" method="post">
+    <div class="flex flex-col justify-center items-center h-screen bg-[#FAFAFA]">
+        <form th:action="@{/process-login}" method="post" class="flex flex-col justify-around items-center w-1/3 h-3/5 rounded-2xl shadow-2xl bg-white">
+            <h2 class="font-bold text-5xl text-center m-4">Lang Learn</h2>
             <div>
-                <label>Użytkownik:</label>
-                <input type="text" name="username" class="border-[1px] border-black" placeholder="username"/>
+                <input type="text" name="username" class="border border-black m-4 p-4 rounded-xl w-full text-xl" placeholder="username"/>
+                <input type="password" name="password" class="border border-black m-4 p-4 rounded-xl w-full text-xl" placeholder="password"/>
             </div>
-            <div>
-                <label>Hasło:</label>
-                <input type="password" name="password" class="border-[1px] border-black" placeholder="password"/>
-            </div>
-            <button type="submit">Zaloguj</button>
+            <button type="submit" class="border p-4 rounded-xl w-[300px] font-bold text-xl cursor-pointer hover:bg-[#FAFAFA] ">Sign in</button>
         </form>
-    </section>
+    </div>
 </body>
 </html>
