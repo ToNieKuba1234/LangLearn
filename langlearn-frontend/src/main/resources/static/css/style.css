@@ -7,11 +7,8 @@
     'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
-    --color-amber-100: oklch(96.2% 0.059 95.617);
-    --color-amber-300: oklch(87.9% 0.169 91.605);
     --color-amber-400: oklch(82.8% 0.189 84.429);
     --color-amber-500: oklch(76.9% 0.188 70.08);
-    --color-gray-300: oklch(87.2% 0.01 258.338);
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
@@ -30,8 +27,6 @@
     --font-weight-bold: 700;
     --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
-    --default-transition-duration: 150ms;
-    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
   }
@@ -191,62 +186,23 @@
   .flex {
     display: flex;
   }
-  .table {
-    display: table;
-  }
-  .h-3 {
-    height: calc(var(--spacing) * 3);
-  }
   .h-3\/5 {
     height: calc(3 / 5 * 100%);
   }
   .h-screen {
     height: 100vh;
   }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
-  }
-  .w-1\/2 {
-    width: calc(1 / 2 * 100%);
-  }
-  .w-1\/3 {
-    width: calc(1 / 3 * 100%);
-  }
-  .w-2 {
-    width: calc(var(--spacing) * 2);
-  }
-  .w-2\/3 {
-    width: calc(2 / 3 * 100%);
-  }
   .w-2\/5 {
     width: calc(2 / 5 * 100%);
-  }
-  .w-3 {
-    width: calc(var(--spacing) * 3);
   }
   .w-3\/4 {
     width: calc(3 / 4 * 100%);
   }
-  .w-4 {
-    width: calc(var(--spacing) * 4);
-  }
-  .w-4\/5 {
-    width: calc(4 / 5 * 100%);
-  }
-  .w-\[300px\] {
-    width: 300px;
-  }
   .w-full {
     width: 100%;
   }
-  .border-collapse {
-    border-collapse: collapse;
-  }
   .cursor-pointer {
     cursor: pointer;
-  }
-  .resize {
-    resize: both;
   }
   .flex-col {
     flex-direction: column;
@@ -276,12 +232,6 @@
   .bg-\[\#FAFAFA\] {
     background-color: #FAFAFA;
   }
-  .bg-amber-400 {
-    background-color: var(--color-amber-400);
-  }
-  .bg-amber-500 {
-    background-color: var(--color-amber-500);
-  }
   .bg-white {
     background-color: var(--color-white);
   }
@@ -291,10 +241,6 @@
   .text-center {
     text-align: center;
   }
-  .text-2xl {
-    font-size: var(--text-2xl);
-    line-height: var(--tw-leading, var(--text-2xl--line-height));
-  }
   .text-3xl {
     font-size: var(--text-3xl);
     line-height: var(--tw-leading, var(--text-3xl--line-height));
@@ -302,10 +248,6 @@
   .text-4xl {
     font-size: var(--text-4xl);
     line-height: var(--tw-leading, var(--text-4xl--line-height));
-  }
-  .text-5xl {
-    font-size: var(--text-5xl);
-    line-height: var(--tw-leading, var(--text-5xl--line-height));
   }
   .text-lg {
     font-size: var(--text-lg);
@@ -319,32 +261,15 @@
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
   }
-  .underline {
-    text-decoration-line: underline;
-  }
   .shadow-2xl {
     --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .outline {
-    outline-style: var(--tw-outline-style);
-    outline-width: 1px;
   }
   .hover\:bg-\[\#FAFAFA\] {
     &:hover {
       @media (hover: hover) {
         background-color: #FAFAFA;
       }
-    }
-  }
-  .md\:w-4\/5 {
-    @media (width >= 48rem) {
-      width: calc(4 / 5 * 100%);
-    }
-  }
-  .md\:w-full {
-    @media (width >= 48rem) {
-      width: 100%;
     }
   }
   .md\:text-5xl {
@@ -356,12 +281,6 @@
   .lg\:w-1\/2 {
     @media (width >= 64rem) {
       width: calc(1 / 2 * 100%);
-    }
-  }
-  .lg\:text-5xl {
-    @media (width >= 64rem) {
-      font-size: var(--text-5xl);
-      line-height: var(--tw-leading, var(--text-5xl--line-height));
     }
   }
   .xl\:w-2\/5 {
@@ -444,11 +363,6 @@
   inherits: false;
   initial-value: 0 0 #0000;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -468,7 +382,6 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-outline-style: solid;
     }
   }
 }

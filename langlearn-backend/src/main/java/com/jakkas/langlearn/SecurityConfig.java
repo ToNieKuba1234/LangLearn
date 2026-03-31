@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -14,27 +14,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) 
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+            .csrf(csrf -> csrf.disable()) // KLUCZOWE dla 403 przy POST
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/process-login", "/register", "/css/**").permitAll()
+                .requestMatchers("/api/process-login", "/api/users").permitAll() // Upewnij się, że ścieżka się zgadza
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
-                .permitAll()
-            );
-        
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
-    }
-    
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    } 
 }
