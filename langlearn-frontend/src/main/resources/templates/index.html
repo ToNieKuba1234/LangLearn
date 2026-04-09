@@ -5,10 +5,35 @@
     <title>LangLearn</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
-    <header class="flex justify-center flex-col">
-        <h1 class="text-3xl font-bold padding-[8px]">Welcome back - <span th:text="${username}">User</span>!</h1>
-        <p>You have <span class="font-bold" th:text="${trophies}">?</span>trophies</p>
+<body class="min-h-screen flex flex-col font-sans">
+    <header class="h-20 sm:h-24 lg:h-28 flex justify-center items-stretch border-b border-[0.5px] border-gray-200 bg-white">
+        <div class="hidden sm:flex flex-1 items-center px-8 gap-3">
+            <span class="text-gray-400 font-medium uppercase tracking-widest text-xs lg:text-sm">Nick</span>
+            <span class="font-extrabold text-black text-lg lg:text-xl tracking-tight" th:text="${username}">?</span>
+        </div>
+
+        <button class="w-40 sm:w-56 lg:w-64 bg-white text-black font-bold tracking-[0.1dem] transition-all duration-300 hover:bg-gray-50 active:bg-gray-100 cursor-pointer border-x border-[0.5px] border-gray-200">
+            <span class="text-xl sm:text-3xl">Play</span>
+        </button>
+
+        <div class="hidden sm:flex flex-1 items-center justify-end px-8 gap-3">
+            <span class="text-gray-400 font-medium uppercase tracking-widest text-xs lg:text-sm">Trophies</span>
+            <div class="flex items-center bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+                <span class="font-black text-black text-lg lg:text-2xl mr-2" th:text="${trophies}">?</span>
+                <span class="text-xl lg:text-2xl">🏆</span>
+            </div>
+        </div>
     </header>
+
+    <main class="flex-grow flex flex-col justify-center items-center text-center p-4">
+        <h2 class="text-3xl font-bold lg:text-5xl tracking-tight text-black">Welcome to LangLearn!</h2>
+        <p class="mt-2 text-lg text-gray-400 lg:text-xl font-light">Continue your language journey</p>
+    </main>
+
+    <footer class="bg-black text-white p-6">
+        <p class="text-center text-xs md:text-sm tracking-widest text-gray-400">&copy; LANGLEARN BY JAKUB KASPRZAK 2026</p>
+        <p class="text-center text-[10px] md:text-xs tracking-[0.3em] text-gray-600 mt-1">ALL RIGHTS RESERVED.</p>
+    </footer>
+
 </body>
 </html>
