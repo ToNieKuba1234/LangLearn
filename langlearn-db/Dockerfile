@@ -1,0 +1,7 @@
+FROM postgres:16-alpine
+
+ENV POSTGRES_DB=langlearn_db
+ENV POSTGRES_USER=admin
+ENV POSTGRES_PASSWORD=password123
+
+EXPOSE 5432
