@@ -1,3 +1,5 @@
 Start taiwindscss live: npx tailwindcss -i ./css/input.css -o ./css/style.css --watch
 Start docker: docker compose up -d
 Entering db thru docker: docker exec -it langlearn-db psql -U admin -d langlearn_db
+Start k8s: kubectl apply -f k8s-setup.yaml
+Start Frontend service : minikube service langlearn-frontend-service
