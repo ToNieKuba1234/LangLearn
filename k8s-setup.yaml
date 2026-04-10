@@ -1,0 +1,120 @@
+# db
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: langlearn-db-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: langlearn-db
+  template:
+    metadata:
+      labels:
+        app: langlearn-db
+    spec:
+      containers:
+      - name: db
+        image: postgres:16-alpine
+        env:
+        - name: POSTGRES_DB
+          value: langlearn
+        - name: POSTGRES_USER
+          value: user
+        - name: POSTGRES_PASSWORD
+          value: pass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: langlearn-db-service
+spec:
+  selector:
+    app: langlearn-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+# backend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: langlearn-backend-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: langlearn-backend
+  template:
+    metadata:
+      labels:
+        app: langlearn-backend
+    spec:
+      containers:
+      - name: backend
+        image: langlearn-backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://langlearn-db-service:5432/langlearn
+        - name: SPRING_DATASOURCE_USERNAME
+          value: user
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: pass
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: update
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: langlearn-backend-service
+spec:
+  selector:
+    app: langlearn-backend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+# frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: langlearn-frontend-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: langlearn-frontend
+  template:
+    metadata:
+      labels:
+        app: langlearn-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: langlearn-frontend:latest
+        imagePullPolicy: Never
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: langlearn-frontend-service
+spec:
+  type: NodePort
+  selector:
+    app: langlearn-frontend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080

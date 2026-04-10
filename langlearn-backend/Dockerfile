@@ -1,11 +1,10 @@
-#Basic alpine
-# FROM eclipse-temurin:17-jre-alpine
+FROM alpine:latest
 WORKDIR /app
 
-COPY target/*.jar app.jar
-#System update
+RUN apk update && apk upgrade
+RUN apk add --no-cache openjdk25-jre
 
-#Install openjre
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY target/*.jar langlearn-backend.jar
 
-COPY target/*.jar app.jar
+EXPOSE 3000
+ENTRYPOINT ["java", "-jar", "langlearn-backend.jar"]
