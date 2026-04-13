@@ -19,6 +19,7 @@
 
     <modules>
         <module>langlearn-frontend</module>
+        <module>langlearn-db</module>
         <module>langlearn-backend</module>
     </modules>
 
