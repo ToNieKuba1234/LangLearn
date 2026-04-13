@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "Building docker image for DB..."
+echo "DB..."
 docker build -t langlearn-db:latest .

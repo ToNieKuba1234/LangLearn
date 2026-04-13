@@ -32,8 +32,7 @@ spec:
   selector:
     app: langlearn-db
   ports:
-    - protocol: TCP
-      port: 5432
+    - port: 5432
       targetPort: 5432
 
 ---

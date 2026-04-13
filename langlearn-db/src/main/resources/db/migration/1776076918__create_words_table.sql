@@ -1,0 +1,5 @@
+CREATE TABLE words (
+    id SERIAL PRIMARY KEY,
+    german_word VARCHAR(255) UNIQUE NOT NULL,
+    polish_word VARCHAR(255) UNIQUE NOT NULL
+);
