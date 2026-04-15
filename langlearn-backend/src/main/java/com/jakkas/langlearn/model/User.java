@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,5 +47,19 @@ public class Users {
     }
     public void setTrophies(int trophies) {
         this.trophies = trophies;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        User user;
+        if (obj instanceof User) { user = (User) obj; }
+        else 
+            return false;
+
+        if (user.getUsername().equals(this.getUsername()) && user.getPassword().equals(this.getPassword())) {
+            return true;
+        }
+
+        return false;
     }
 }

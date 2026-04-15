@@ -1,6 +1,6 @@
 package com.jakkas.langlearn.controller;
 
-import com.jakkas.langlearn.model.Users;
+import com.jakkas.langlearn.model.User;
 import com.jakkas.langlearn.repository.UsersRepository;
 import com.jakkas.langlearn.service.UsersService;
 
@@ -30,20 +30,20 @@ public class BackendUsersController {
     
     // Pobieranie listy użytkowników (używamy Twojej klasy Users)
     @GetMapping("/users")
-    public List<Users> getAllUsers() {
+    public List<User> getAllUsers() {
         return usersRepository.findAll(); 
     }
 
     //Find users by name
     @GetMapping("/users/{username}")
-    public ResponseEntity<Users> getUserByUsername(@PathVariable String username) {
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         return usersRepository.findByUsername(username).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
     
 
     // Logowanie - zwracamy status OK lub błąd, nie robimy przekierowań!
     @PostMapping("/process-login")
-    public ResponseEntity<Void> loginProcess(@RequestBody Users loginData) {
+    public ResponseEntity<Void> loginProcess(@RequestBody User loginData) {
         System.out.println("DEBUG BACKEND: Received login request for : " + loginData.getPassword());
         boolean isAuthenticated = usersService.checkLogin(loginData.getUsername(), loginData.getPassword());
 
