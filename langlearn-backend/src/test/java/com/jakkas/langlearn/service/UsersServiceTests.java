@@ -26,7 +26,6 @@ public class UsersServiceTests {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-
     private AutoCloseable closeable;
 
     @BeforeEach
