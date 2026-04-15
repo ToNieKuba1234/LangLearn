@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,5 +59,34 @@ public class UsersServiceTests {
         assertTrue(passwordEncoder.matches(password, resultUser.getPassword()));
         assertEquals(username, returnedValue.getUsername());
         assertTrue(passwordEncoder.matches(password, resultUser.getPassword()));
+    }
+
+    @Test
+    public void testCheckLoginForAvailableUser() {
+        //given 
+        String username = "jakk";
+        String password = "kuba123";
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+
+        //when
+        when(usersRepository.findByUsername(any())).thenReturn(Optional.of(user));
+
+        //then
+        assertTrue(usersService.checkLogin(username, password));
+    }
+
+    @Test
+    public void testCheckLoginForUnavailableUser() {
+        //given 
+        String username = "jakk";
+        String password = "kuba123";
+        
+        //when
+        when(usersRepository.findByUsername(any())).thenReturn(Optional.empty());
+        
+        //then
+        assertEquals(false, usersService.checkLogin(username, password));
     }
 }
