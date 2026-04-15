@@ -69,12 +69,13 @@ public class UsersServiceTests {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-
-        //when
         when(usersRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
+        //when
+        boolean result = usersService.checkLogin(username, password);
+
         //then
-        assertTrue(usersService.checkLogin(username, password));
+        assertTrue(result);
     }
 
     @Test
@@ -82,11 +83,12 @@ public class UsersServiceTests {
         //given 
         String username = "jakk";
         String password = "kuba123";
-        
-        //when
         when(usersRepository.findByUsername(any())).thenReturn(Optional.empty());
-        
+
+        //when
+        boolean result = usersService.checkLogin(username, password);
+
         //then
-        assertEquals(false, usersService.checkLogin(username, password));
+        assertFalse(result);
     }
 }

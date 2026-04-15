@@ -28,20 +28,16 @@ public class BackendUsersController {
         this.usersRepository = usersRepository;
     }
     
-    // Pobieranie listy użytkowników (używamy Twojej klasy Users)
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return usersRepository.findAll(); 
     }
 
-    //Find users by name
     @GetMapping("/users/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         return usersRepository.findByUsername(username).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-    
 
-    // Logowanie - zwracamy status OK lub błąd, nie robimy przekierowań!
     @PostMapping("/process-login")
     public ResponseEntity<Void> loginProcess(@RequestBody User loginData) {
         System.out.println("DEBUG BACKEND: Received login request for : " + loginData.getPassword());
@@ -49,9 +45,9 @@ public class BackendUsersController {
 
         System.out.println("DEBUG BACKEND: Password verification result : " + isAuthenticated);
         if (isAuthenticated) {
-            return ResponseEntity.ok().build(); // 200 OK - Backend mówi: "Dane są poprawne"
+            return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 401 - Błędne dane
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

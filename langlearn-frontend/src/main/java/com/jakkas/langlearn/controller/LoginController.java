@@ -26,7 +26,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String showLoginPage() {
-        return "login"; // zwraca login.html
+        return "login";
     }
 
     @PostMapping("/process-login")
@@ -36,11 +36,9 @@ public class LoginController {
         System.out.println("DEBUG: Attempted to log in: " + username);
         
         if (restClient.authenticate(username, password)) {
-            // Ręczne zalogowanie użytkownika w sesji FRONTENDU
             var auth = new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
             SecurityContextHolder.getContext().setAuthentication(auth);
             
-            // Ważne: zapisanie kontekstu w sesji, żeby Spring Security "pamiętał" zalogowanie
             HttpSession session = request.getSession(true);
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
             
