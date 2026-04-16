@@ -3,3 +3,4 @@ node_modules
 mvnw*
 dist
 .vscode
+.idea

@@ -12,10 +12,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 import com.jakkas.langlearn.dto.User;
 import com.jakkas.langlearn.restclient.UsersRestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 public class UsersRestClientTests {
     @Mock
@@ -46,6 +48,7 @@ public class UsersRestClientTests {
         User result = usersRestClient.getUserDetails(username);
 
         //then
+        assertNotNull(result);
         verify(restClient, times(1)).get();
     }
 
@@ -74,11 +77,41 @@ public class UsersRestClientTests {
 
     @Test
     public void testAuthenticationFailedWith401() {
+        // given
+        RestClient.RequestBodyUriSpec postSpec = mock(RestClient.RequestBodyUriSpec.class);
+        RestClient.RequestBodySpec bodySpec = mock(RestClient.RequestBodySpec.class);
+        RestClient.ResponseSpec responseSpec = mock(RestClient.ResponseSpec.class);
 
+        when(restClient.post()).thenReturn(postSpec);
+        when(postSpec.uri("/api/process-login")).thenReturn(bodySpec);
+        when(bodySpec.body(any(User.class))).thenReturn(bodySpec);
+        when(bodySpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.toBodilessEntity())
+                .thenReturn(new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
+
+
+        //when
+        boolean result = usersRestClient.authenticate("jakk", "kuba123");
+
+        //then
+        assertFalse(result);
     }
 
     @Test
     public void testAuthenticationCausesUnexpectedException() {
+        // given
+        RestClient.RequestBodyUriSpec postSpec = mock(RestClient.RequestBodyUriSpec.class);
+        RestClient.RequestBodySpec bodySpec = mock(RestClient.RequestBodySpec.class);
 
+        when(restClient.post()).thenReturn(postSpec);
+        when(postSpec.uri("/api/process-login")).thenReturn(bodySpec);
+        when(bodySpec.body(any(User.class))).thenReturn(bodySpec);
+        when(bodySpec.retrieve()).thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        //when
+        boolean result = usersRestClient.authenticate("jakk", "kuba123");
+
+        //then
+        assertFalse(result);
     }
 }
