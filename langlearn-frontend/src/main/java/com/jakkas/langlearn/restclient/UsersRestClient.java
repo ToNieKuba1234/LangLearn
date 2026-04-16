@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.jakkas.langlearn.dto.Users;
+import com.jakkas.langlearn.dto.User;
 
 @Component
 public class UsersRestClient {
@@ -16,7 +16,7 @@ public class UsersRestClient {
 
     public boolean authenticate(String username, String password) {
         try {
-            Users userPayload = new Users();
+            User userPayload = new User();
             userPayload.setUsername(username);
             userPayload.setPassword(password);
 
@@ -34,9 +34,9 @@ public class UsersRestClient {
         }
     }
 
-    public Users getUserDetails(String username) {
+    public User getUserDetails(String username) {
         try {
-            return restClient.get().uri("/api/users/{username}", username).retrieve().body(Users.class);
+            return restClient.get().uri("/api/users/{username}", username).retrieve().body(User.class);
         } catch (Exception e) {
             System.err.println("Error occured while downloading user data : " + e.getMessage());
             return null;

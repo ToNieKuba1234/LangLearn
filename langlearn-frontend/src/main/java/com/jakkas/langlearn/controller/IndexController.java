@@ -1,12 +1,18 @@
 package com.jakkas.langlearn.controller;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.NoSuchElementException;
+
+import javax.naming.NameNotFoundException;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
-import com.jakkas.langlearn.dto.Users;
+import com.jakkas.langlearn.dto.User;
 import com.jakkas.langlearn.restclient.UsersRestClient;
 
 @Controller
@@ -21,16 +27,16 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = auth.getName();
+        String currentUsername = "";
+        if (auth != null) { currentUsername = auth.getName(); }
 
-        Users userDetails = usersRestClient.getUserDetails(currentUsername);
+        User userDetails = usersRestClient.getUserDetails(currentUsername);
 
-        if (userDetails != null) {
+        try {
             model.addAttribute("username", userDetails.getUsername());
             model.addAttribute("trophies", userDetails.getTrophies());
-        } else {
-            model.addAttribute("username", currentUsername);
-            model.addAttribute("trophies", 0);
+        } catch(Exception e) {
+            throw new NoSuchElementException("Unable to find user details for : " + currentUsername);
         }
 
         return "index"; 
