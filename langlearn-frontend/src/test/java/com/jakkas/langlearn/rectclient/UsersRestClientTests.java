@@ -1,0 +1,84 @@
+package com.jakkas.langlearn.rectclient;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClient;
+
+import com.jakkas.langlearn.dto.User;
+import com.jakkas.langlearn.restclient.UsersRestClient;
+
+public class UsersRestClientTests {
+    @Mock
+    private RestClient restClient;
+
+    @InjectMocks
+    private UsersRestClient usersRestClient;
+
+
+    AutoCloseable closeable;
+
+    @BeforeEach
+    void before() {
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void after() throws Exception {
+        closeable.close();
+    }
+
+    @Test
+    public void testGetUserDetails() {
+        //given
+        String username = "jakk";
+        
+        //when
+        User result = usersRestClient.getUserDetails(username);
+
+        //then
+        verify(restClient, times(1)).get();
+    }
+
+
+    @Test
+    public void testAuthenticationIsSuccessful() {
+        // given
+        RestClient.RequestBodyUriSpec postSpec = mock(RestClient.RequestBodyUriSpec.class);
+        RestClient.RequestBodySpec bodySpec = mock(RestClient.RequestBodySpec.class);
+        RestClient.ResponseSpec responseSpec = mock(RestClient.ResponseSpec.class);
+
+        when(restClient.post()).thenReturn(postSpec);
+        when(postSpec.uri("/api/process-login")).thenReturn(bodySpec);
+        when(bodySpec.body(any(User.class))).thenReturn(bodySpec);
+        when(bodySpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.toBodilessEntity())
+                .thenReturn(new ResponseEntity<>(HttpStatus.OK));
+
+        // when
+        boolean result = usersRestClient.authenticate("jakk", "kuba123");
+
+        // then
+        assertTrue(result);
+    }
+
+
+    @Test
+    public void testAuthenticationFailedWith401() {
+
+    }
+
+    @Test
+    public void testAuthenticationCausesUnexpectedException() {
+
+    }
+}
