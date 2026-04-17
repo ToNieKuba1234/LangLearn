@@ -4,3 +4,4 @@ mvnw*
 dist
 .vscode
 .idea
+langlearn-frontend/src/main/resources/static/css/style.css
