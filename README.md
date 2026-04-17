@@ -1,1 +1,1 @@
-![CI](https://github.com/username/repo/actions/workflows/ci.yml/badge.svg) 
+[![CI](https://github.com/ToNieKuba1234/LangLearn/actions/workflows/maven.yml/badge.svg)](https://github.com/ToNieKuba1234/LangLearn/actions/workflows/maven.yml)
