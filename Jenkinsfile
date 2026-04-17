@@ -10,6 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                sh 'echo "Hej Kuba"'
             }
         }
 
