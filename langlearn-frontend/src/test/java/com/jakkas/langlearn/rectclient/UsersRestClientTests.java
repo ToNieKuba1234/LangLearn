@@ -17,7 +17,6 @@ import org.springframework.web.client.RestClient;
 
 import com.jakkas.langlearn.dto.User;
 import com.jakkas.langlearn.restclient.UsersRestClient;
-import org.springframework.web.client.RestClientResponseException;
 
 public class UsersRestClientTests {
     @Mock
@@ -43,6 +42,20 @@ public class UsersRestClientTests {
     public void testGetUserDetails() {
         //given
         String username = "jakk";
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword("kuba123");
+
+        // given
+        RestClient.RequestHeadersUriSpec getSpec = mock(RestClient.RequestBodyUriSpec.class);
+        RestClient.RequestBodySpec bodySpec = mock(RestClient.RequestBodySpec.class);
+        RestClient.ResponseSpec responseSpec = mock(RestClient.ResponseSpec.class);
+
+        when(restClient.get()).thenReturn(getSpec);
+        when(getSpec.uri("/api/users/{username}", username)).thenReturn(bodySpec);
+        when(bodySpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.body(User.class))
+                .thenReturn(user);
         
         //when
         User result = usersRestClient.getUserDetails(username);
