@@ -47,13 +47,14 @@ pipeline {
             }
         }
 
+
         stage("Minikube") {
             steps {
                 script {
                     sh "cp ~/.kube/config /tmp/kubeconfig"
                     
                     withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
-                        sh "kubectl config set-cluster minikube --server=https://127.0.0.1:8443 --insecure-skip-tls-verify"
+                        sh "kubectl config set-cluster minikube --server=https://192.168.49.2:8443 --insecure-skip-tls-verify"
                         
                         sh "kubectl apply -f k8s/deployment.yaml --validate=false"
                         sh "kubectl apply -f k8s/service.yaml --validate=false"
