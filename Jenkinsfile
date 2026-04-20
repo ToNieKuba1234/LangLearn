@@ -54,6 +54,10 @@ pipeline {
                     sh "cp ~/.kube/config /tmp/kubeconfig"
                     
                     withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
+
+                        sh "minikube image load langlearn-backend:latest"
+                        sh "minikube image load langlearn-frontend:latest"
+
                         sh "kubectl config set-cluster minikube --server=https://192.168.49.2:8443 --insecure-skip-tls-verify"
                         
                         sh "kubectl apply -f k8s/deployment.yaml --validate=false"
