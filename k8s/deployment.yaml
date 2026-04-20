@@ -49,9 +49,9 @@ spec:
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://langlearn-db-service:5432/langlearn
         - name: SPRING_DATASOURCE_USERNAME
-          value: user
+          value: admin
         - name: SPRING_DATASOURCE_PASSWORD
-          value: pass
+          value: password123
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
           value: update
 

@@ -47,6 +47,15 @@ pipeline {
             }
         }
 
+        stage('Load Images') {
+            steps {
+                script {
+                    sh "minikube image load langlearn-backend:latest"
+                    sh "minikube image load langlearn-frontend:latest"
+                }
+            }
+        }
+
 
         stage("Minikube") {
             steps {
@@ -54,9 +63,7 @@ pipeline {
                     sh "cp ~/.kube/config /tmp/kubeconfig"
                     
                     withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
-                        def minikubeIp = "192.168.49.2"
-                        
-                        sh "kubectl config set-cluster minikube --server=https://${minikubeIp}:8443 --insecure-skip-tls-verify"
+                        sh "kubectl config set-cluster minikube --server=https://127.0.0.1:8443 --insecure-skip-tls-verify"
                         
                         sh "kubectl apply -f k8s/deployment.yaml --validate=false"
                         sh "kubectl apply -f k8s/service.yaml --validate=false"
@@ -65,6 +72,8 @@ pipeline {
                         sh "kubectl rollout status deployment/langlearn-backend-dep"
                         sh "kubectl rollout status deployment/langlearn-frontend-dep"
                     }
+
+                    sh "mvn flyway:migrate"
                 }
             }
         }
