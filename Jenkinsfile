@@ -47,16 +47,12 @@ pipeline {
             }
         }
 
-
         stage("Minikube") {
             steps {
                 script {
                     sh "cp ~/.kube/config /tmp/kubeconfig"
                     
                     withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
-                        sh "minikube image load langlearn-backend:latest"
-                        sh "minikube image load langlearn-frontend:latest"
-
                         sh "kubectl config set-cluster minikube --server=https://127.0.0.1:8443 --insecure-skip-tls-verify"
                         
                         sh "kubectl apply -f k8s/deployment.yaml --validate=false"
@@ -66,8 +62,6 @@ pipeline {
                         sh "kubectl rollout status deployment/langlearn-backend-dep"
                         sh "kubectl rollout status deployment/langlearn-frontend-dep"
                     }
-
-                    sh "mvn flyway:migrate"
                 }
             }
         }
