@@ -13,47 +13,47 @@ pipeline {
             }
         }
 
-        stage('maven') {
-            stage('Compile') {
-                steps {
-                    sh 'mvn clean compile'
-                }
+        stage('Compile') {
+            steps {
+                sh 'mvn clean compile'
             }
+        }
 
-            stage('Run Tests') {
-                steps {
-                    sh 'mvn test'
-                }
-                post {
-                    always {
-                        junit '**/target/surefire-reports/*.xml'
-                    }
-                }
+        stage('Run Tests') {
+            steps {
+                sh 'mvn test'
             }
-
-            stage('Build JAR') {
-                steps {
-                    sh 'mvn package -DskipTests'
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
                 }
             }
         }
 
-        stage('build docker images') {
-            dir('langlearn-backend') {
-                sh 'chmod +x backend-build.sh && ./backend-build.sh'
-            }
-            dir('langlearn-frontend') {
-                sh 'chmod +x frontend-build.sh && ./frontend-build.sh'
-            }
-            dir('langlearn-db') {
-                sh 'chmod +x db-build.sh && ./db-build.sh'
+        stage('Build JAR') {
+            steps {
+                sh 'mvn package -DskipTests'
             }
         }
 
-        stage("minikube") {
+        stage('Build Docker Images') {
+            steps {
+                dir('langlearn-backend') {
+                    sh 'chmod +x backend-build.sh && ./backend-build.sh'
+                }
+                dir('langlearn-frontend') {
+                    sh 'chmod +x frontend-build.sh && ./frontend-build.sh'
+                }
+                dir('langlearn-db') {
+                    sh 'chmod +x db-build.sh && ./db-build.sh'
+                }
+            }
+        }
+
+        stage("Minikube Deployment") {
             steps {
                 script {
-                    sh "kubectl config set-cluster minikube --server=https://172.17.0.1:8443"
+                    sh "kubectl config set-cluster minikube --server=https://172.17.0.1:8443 --insecure-skip-tls-verify"
                     
                     sh "kubectl apply -f k8s/deployment.yaml"
                     sh "kubectl apply -f k8s/service.yaml"
