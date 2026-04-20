@@ -39,7 +39,15 @@ pipeline {
         }
 
         stage('build docker images') {
-            
+            dir('langlearn-backend') {
+                sh 'chmod +x backend-build.sh && ./backend-build.sh'
+            }
+            dir('langlearn-frontend') {
+                sh 'chmod +x frontend-build.sh && ./frontend-build.sh'
+            }
+            dir('langlearn-db') {
+                sh 'chmod +x db-build.sh && ./db-build.sh'
+            }
         }
 
         stage("minikube") {
