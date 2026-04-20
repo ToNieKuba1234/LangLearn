@@ -8,7 +8,6 @@ pipeline {
             }
         }
 
-        // --- Grupa 1: Maven ---
         stage('Maven') {
             stages {
                 stage('Compile') {
@@ -48,16 +47,19 @@ pipeline {
             }
         }
 
-        stage('Minikube') {
-            stages {
-                stage("Minikube Deployment") {
-                    steps {
-                        script {
-                            sh "kubectl config set-cluster minikube --server=https://172.17.0.1:8443 --insecure-skip-tls-verify"
-                            sh "kubectl apply -f k8s/deployment.yaml"
-                            sh "kubectl apply -f k8s/service.yaml"
-                            sh "kubectl rollout status deployment/langlearn"
-                        }
+
+        stage("Minikube") {
+            steps {
+                script {
+                    sh "cp ~/.kube/config /tmp/kubeconfig"
+                    
+                    withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
+                        sh "kubectl config set-cluster minikube --server=https://172.17.0.1:8443 --insecure-skip-tls-verify"
+                        
+                        sh "kubectl apply -f k8s/deployment.yaml"
+                        sh "kubectl apply -f k8s/service.yaml"
+                        
+                        sh "kubectl rollout status deployment/langlearn"
                     }
                 }
             }
