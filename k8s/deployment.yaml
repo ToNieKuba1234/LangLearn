@@ -39,10 +39,11 @@ spec:
       labels:
         app: langlearn-backend
     spec:
+      imagePullSecrets:
+      - name: nexus-registry
       containers:
       - name: backend
         image: langlearn-backend:latest
-        imagePullPolicy: Never
         ports:
         - containerPort: 3000
         env:
@@ -71,10 +72,11 @@ spec:
       labels:
         app: langlearn-frontend
     spec:
+      imagePullSecrets:
+      - name: nexus-registry
       containers:
       - name: frontend
         image: langlearn-frontend:latest
-        imagePullPolicy: Never
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "k8s"

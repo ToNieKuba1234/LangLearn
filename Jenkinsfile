@@ -1,71 +1,62 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    environment {
+        NEXUS_HOST_IP = "192.168.53.53" 
+        NEXUS_PORT = "8081"
+        NEXUS_REGISTRY = "${NEXUS_HOST_IP}:${NEXUS_PORT}"
+    }
 
-        stage('Maven') {
-            stages {
-                stage('Compile') {
-                    steps {
-                        sh 'mvn clean compile'
-                    }
-                }
-                stage('Run Tests') {
-                    steps {
-                        sh 'mvn test'
-                    }
-                    post {
-                        always {
-                            junit '**/target/surefire-reports/*.xml'
+    stages {
+        stage('Build & Push to Nexus') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'nexus-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    script {
+                        sh "docker login ${NEXUS_REGISTRY} -u ${USER} -p ${PASS}"
+
+                        dir('langlearn-backend') {
+                            sh 'chmod +x backend-build.sh && ./backend-build.sh'
+                            sh "docker tag langlearn-backend:latest ${NEXUS_REGISTRY}/langlearn-backend:latest"
+                            sh "docker push ${NEXUS_REGISTRY}/langlearn-backend:latest"
+                        }
+                        dir('langlearn-frontend') {
+                            sh 'chmod +x frontend-build.sh && ./frontend-build.sh'
+                            sh "docker tag langlearn-frontend:latest ${NEXUS_REGISTRY}/langlearn-frontend:latest"
+                            sh "docker push ${NEXUS_REGISTRY}/langlearn-frontend:latest"
+                        }
+                        dir('langlearn-db') {
+                            sh 'chmod +x db-build.sh && ./db-build.sh'
+                            sh "docker tag langlearn-db:latest ${NEXUS_REGISTRY}/langlearn-db:latest"
+                            sh "docker push ${NEXUS_REGISTRY}/langlearn-db:latest"
                         }
                     }
                 }
-                stage('Build JAR') {
-                    steps {
-                        sh 'mvn package -DskipTests'
-                    }
-                }
             }
         }
 
-        stage('Build Docker Images') {
+        stage("Deploy to Minikube") {
             steps {
-                dir('langlearn-backend') {
-                    sh 'chmod +x backend-build.sh && ./backend-build.sh'
-                }
-                dir('langlearn-frontend') {
-                    sh 'chmod +x frontend-build.sh && ./frontend-build.sh'
-                }
-                dir('langlearn-db') {
-                    sh 'chmod +x db-build.sh && ./db-build.sh'
-                }
-            }
-        }
+                withCredentials([usernamePassword(credentialsId: 'nexus-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    script {
+                        sh "cp ~/.kube/config /tmp/kubeconfig"
+                        withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
+                            sh """
+                            kubectl delete secret nexus-registry --ignore-not-found
+                            kubectl create secret docker-registry nexus-registry \
+                              --docker-server=${NEXUS_REGISTRY} \
+                              --docker-username=${USER} \
+                              --docker-password=${PASS}
+                            """
+                            
+                            sh "cp k8s/deployment.yaml k8s/deployment-temp.yaml"
+                            sh "sed -i 's|image: langlearn-backend:latest|image: ${NEXUS_REGISTRY}/langlearn-backend:latest|g' k8s/deployment-temp.yaml"
+                            sh "sed -i 's|image: langlearn-frontend:latest|image: ${NEXUS_REGISTRY}/langlearn-frontend:latest|g' k8s/deployment-temp.yaml"
+                            sh "sed -i 's|image: langlearn-db:latest|image: ${NEXUS_REGISTRY}/langlearn-db:latest|g' k8s/deployment-temp.yaml"
 
-
-        stage("Minikube") {
-            steps {
-                script {
-                    sh "cp ~/.kube/config /tmp/kubeconfig"
-                    
-                    withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
-
-                        sh "minikube image load langlearn-backend:latest"
-                        sh "minikube image load langlearn-frontend:latest"
-
-                        sh "kubectl config set-cluster minikube --server=https://192.168.49.2:8443 --insecure-skip-tls-verify"
-                        
-                        sh "kubectl apply -f k8s/deployment.yaml --validate=false"
-                        sh "kubectl apply -f k8s/service.yaml --validate=false"
-                        
-                        sh "kubectl rollout status deployment/langlearn-db-dep"
-                        sh "kubectl rollout status deployment/langlearn-backend-dep"
-                        sh "kubectl rollout status deployment/langlearn-frontend-dep"
+                            sh "kubectl apply -f k8s/deployment-temp.yaml --validate=false"
+                            sh "kubectl apply -f k8s/service.yaml --validate=false"
+                            sh "rm k8s/deployment-temp.yaml"
+                        }
                     }
                 }
             }
