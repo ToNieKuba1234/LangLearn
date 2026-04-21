@@ -55,14 +55,18 @@ pipeline {
                     script {
                         sh "cp ~/.kube/config /tmp/kubeconfig"
                         withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
-                            sh """
-                            kubectl delete secret nexus-registry --ignore-not-found
-                            kubectl create secret docker-registry nexus-registry \
+                            // 1. Zawsze czyścimy sekret
+                            sh "kubectl delete secret nexus-registry --ignore-not-found"
+                            sh "kubectl create secret docker-registry nexus-registry \
                               --docker-server=${NEXUS_REGISTRY} \
                               --docker-username=${USER} \
-                              --docker-password=${PASS}
-                            """
+                              --docker-password=${PASS}"
                             
+                            // 2. Agresywne usuwanie starych deploymentów przed nowym apply
+                            sh "kubectl delete deployment langlearn-backend-dep --ignore-not-found"
+                            sh "kubectl delete deployment langlearn-frontend-dep --ignore-not-found"
+                            
+                            // 3. Wdrożenie na nowo
                             sh "cp k8s/deployment.yaml k8s/deployment-temp.yaml"
                             sh "sed -i 's|image: langlearn-backend:latest|image: ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest|g' k8s/deployment-temp.yaml"
                             
