@@ -12,7 +12,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                     script {
-                        sh "docker login ${NEXUS_REGISTRY} -u ${USER} -p ${PASS}"
+                        sh "echo '${PASS}' | docker login ${NEXUS_REGISTRY} -u ${USER} --password-stdin"
 
                         dir('langlearn-backend') {
                             sh 'chmod +x backend-build.sh && ./backend-build.sh'
