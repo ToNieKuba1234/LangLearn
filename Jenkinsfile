@@ -9,26 +9,18 @@ pipeline {
     }
 
     stages {
-        stage('Compile') {
+        stage('Build Backend') {
             steps {
                 dir('langlearn-backend') {
-                    sh 'mvn clean compile'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
 
-        stage('Test') {
+        stage('Build Frontend') {
             steps {
-                dir('langlearn-backend') {
-                    sh 'mvn test'
-                }
-            }
-        }
-
-        stage('Build JAR') {
-            steps {
-                dir('langlearn-backend') {
-                    sh 'mvn package -DskipTests'
+                dir('langlearn-frontend') {
+                    sh 'npm install && npm run build'
                 }
             }
         }
@@ -40,9 +32,13 @@ pipeline {
                         sh "echo '${PASS}' | docker login ${NEXUS_REGISTRY} -u ${USER} --password-stdin"
 
                         dir('langlearn-backend') {
-                            sh "docker build -t langlearn-backend:latest ."
-                            sh "docker tag langlearn-backend:latest ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest"
+                            sh "docker build -t ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest ."
                             sh "docker push ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest"
+                        }
+                        
+                        dir('langlearn-frontend') {
+                            sh "docker build -t ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-frontend:latest ."
+                            sh "docker push ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-frontend:latest"
                         }
                     }
                 }
@@ -55,26 +51,24 @@ pipeline {
                     script {
                         sh "cp ~/.kube/config /tmp/kubeconfig"
                         withEnv(['KUBECONFIG=/tmp/kubeconfig']) {
-                            // 1. Zawsze czyścimy sekret
                             sh "kubectl delete secret nexus-registry --ignore-not-found"
                             sh "kubectl create secret docker-registry nexus-registry \
                               --docker-server=${NEXUS_REGISTRY} \
                               --docker-username=${USER} \
                               --docker-password=${PASS}"
                             
-                            // 2. Agresywne usuwanie starych deploymentów przed nowym apply
-                            sh "kubectl delete deployment langlearn-backend-dep --ignore-not-found"
-                            sh "kubectl delete deployment langlearn-frontend-dep --ignore-not-found"
+                            sh "kubectl apply -f k8s/ --recursive"
                             
-                            // 3. Wdrożenie na nowo
                             sh "cp k8s/deployment.yaml k8s/deployment-temp.yaml"
                             sh "sed -i 's|image: langlearn-backend:latest|image: ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest|g' k8s/deployment-temp.yaml"
+                            sh "sed -i 's|image: langlearn-frontend:latest|image: ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-frontend:latest|g' k8s/deployment-temp.yaml"
                             
-                            sh "kubectl apply -f k8s/deployment-temp.yaml --validate=false"
-                            sh "kubectl apply -f k8s/service.yaml --validate=false"
+                            sh "kubectl apply -f k8s/deployment-temp.yaml"
                             sh "rm k8s/deployment-temp.yaml"
                             
+                            sh "kubectl rollout status deployment/langlearn-db-dep || echo 'DB already running'"
                             sh "kubectl rollout status deployment/langlearn-backend-dep"
+                            sh "kubectl rollout status deployment/langlearn-frontend-dep"
                         }
                     }
                 }

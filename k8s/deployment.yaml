@@ -43,7 +43,7 @@ spec:
       - name: nexus-registry
       containers:
       - name: backend
-        image: langlearn-backend:latest
+        image: 192.168.53.53:8081/docker-hosted/langlearn-backend:latest
         ports:
         - containerPort: 3000
         env:
@@ -76,7 +76,7 @@ spec:
       - name: nexus-registry
       containers:
       - name: frontend
-        image: langlearn-frontend:latest
+        image: 192.168.53.53:8081/docker-hosted/langlearn-frontend:latest
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "k8s"
