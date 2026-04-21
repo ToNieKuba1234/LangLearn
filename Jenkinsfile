@@ -14,6 +14,10 @@ pipeline {
                 dir('langlearn-backend') {
                     sh 'mvn clean compile'
                 }
+
+                dir('langlearn-frontend') {
+                    sh 'mvn clean compile'
+                }
             }
         }
 
@@ -22,12 +26,20 @@ pipeline {
                 dir('langlearn-backend') {
                     sh 'mvn test'
                 }
+
+                dir('langlearn-frontend') {
+                    sh 'mvn test'
+                }
             }
         }
 
         stage('Build JAR') {
             steps {
                 dir('langlearn-backend') {
+                    sh 'mvn package -DskipTests'
+                }
+
+                dir('langlearn-frontend') {
                     sh 'mvn package -DskipTests'
                 }
             }
