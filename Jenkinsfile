@@ -9,18 +9,26 @@ pipeline {
     }
 
     stages {
-        stage('Build Backend') {
+        stage('Compile') {
             steps {
                 dir('langlearn-backend') {
-                    sh 'mvn clean package -DskipTests'
+                    sh 'mvn clean compile'
                 }
             }
         }
 
-        stage('Build Frontend') {
+        stage('Test') {
             steps {
-                dir('langlearn-frontend') {
-                    sh 'npm install && npm run build'
+                dir('langlearn-backend') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Build JAR') {
+            steps {
+                dir('langlearn-backend') {
+                    sh 'mvn package -DskipTests'
                 }
             }
         }
@@ -35,7 +43,7 @@ pipeline {
                             sh "docker build -t ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest ."
                             sh "docker push ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest"
                         }
-                        
+
                         dir('langlearn-frontend') {
                             sh "docker build -t ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-frontend:latest ."
                             sh "docker push ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-frontend:latest"
@@ -66,9 +74,9 @@ pipeline {
                             sh "kubectl apply -f k8s/deployment-temp.yaml"
                             sh "rm k8s/deployment-temp.yaml"
                             
-                            sh "kubectl rollout status deployment/langlearn-db-dep || echo 'DB already running'"
-                            sh "kubectl rollout status deployment/langlearn-backend-dep"
-                            sh "kubectl rollout status deployment/langlearn-frontend-dep"
+                            sh "kubectl rollout status deployment/langlearn-db-dep --timeout=60s || echo 'DB check skip'"
+                            sh "kubectl rollout status deployment/langlearn-backend-dep --timeout=60s"
+                            sh "kubectl rollout status deployment/langlearn-frontend-dep --timeout=60s"
                         }
                     }
                 }
