@@ -5,6 +5,7 @@ pipeline {
         NEXUS_HOST_IP = "192.168.53.53" 
         NEXUS_PORT = "8081"
         NEXUS_REGISTRY = "${NEXUS_HOST_IP}:${NEXUS_PORT}"
+        REPO_PATH = "repository/docker-hosted"
     }
 
     stages {
@@ -36,11 +37,12 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                     script {
-                        sh "echo '${PASS}' | docker login ${NEXUS_HOST_IP}:${NEXUS_PORT} -u ${USER} --password-stdin"
+                        sh "echo '${PASS}' | docker login ${NEXUS_REGISTRY} -u ${USER} --password-stdin"
 
                         dir('langlearn-backend') {
-                            sh "docker build -t ${NEXUS_REGISTRY}/langlearn-backend:latest ."
-                            sh "docker push ${NEXUS_REGISTRY}/langlearn-backend:latest"
+                            sh "docker build -t langlearn-backend:latest ."
+                            sh "docker tag langlearn-backend:latest ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest"
+                            sh "docker push ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest"
                         }
                     }
                 }
@@ -62,9 +64,10 @@ pipeline {
                             """
                             
                             sh "cp k8s/deployment.yaml k8s/deployment-temp.yaml"
-                            sh "sed -i 's|image: langlearn-backend:latest|image: ${NEXUS_REGISTRY}/langlearn-backend:latest|g' k8s/deployment-temp.yaml"
+                            sh "sed -i 's|image: langlearn-backend:latest|image: ${NEXUS_REGISTRY}/${REPO_PATH}/langlearn-backend:latest|g' k8s/deployment-temp.yaml"
                             
                             sh "kubectl apply -f k8s/deployment-temp.yaml --validate=false"
+                            sh "kubectl apply -f k8s/service.yaml --validate=false"
                             sh "rm k8s/deployment-temp.yaml"
                             
                             sh "kubectl rollout status deployment/langlearn-backend-dep"
