@@ -5,7 +5,7 @@ pipeline {
         NEXUS_HOST_IP = "192.168.53.53" 
         NEXUS_PORT = "8081"
         NEXUS_REGISTRY = "${NEXUS_HOST_IP}:${NEXUS_PORT}"
-        REPO_PATH = "repository/docker-hosted"
+        REPO_PATH = "docker-hosted"
     }
 
     stages {
