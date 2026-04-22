@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node-latest' 
+    }
+
     environment {
         NEXUS_HOST_IP = "192.168.53.53" 
         NEXUS_PORT = "8081"
@@ -29,6 +33,16 @@ pipeline {
 
                 dir('langlearn-frontend') {
                     sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Build TailwindCSS') {
+            steps {
+                dir('langlearn-frontend/src/main/resources/static') {
+                    sh "npm install"
+                    sh "npm run build"
+                    sh "rm -rf node_modules"
                 }
             }
         }
