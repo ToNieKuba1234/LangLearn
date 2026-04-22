@@ -39,10 +39,12 @@ pipeline {
 
         stage('Build TailwindCSS') {
             steps {
-                dir('langlearn-frontend/src/main/resources/static') {
-                    sh "npm install"
-                    sh "npm run build"
-                    sh "rm -rf node_modules"
+                dir('langlearn-frontend') {
+                    nodejs(nodeJSInstallationName: 'node-latest') {
+                        sh "npm install"
+                        sh "npm run build"
+                        sh "rm -rf node_modules"
+                    }
                 }
             }
         }
