@@ -9,22 +9,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .csrf(csrf -> csrf.disable()) // KLUCZOWE: Wyłącz CSRF, inaczej każdy POST bez tokena jest odrzucany po cichu
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/login", "/process-login", "/css/**").permitAll() // Musi tu być!
-            .anyRequest().authenticated()
-        )
-        .formLogin(form -> form
-            .loginPage("/login")
-            // loginProcessingUrl musi być INNY niż Twój kontroler, 
-            // żeby Spring nie próbował sam logować
-            .loginProcessingUrl("/do-not-use-this-url") 
-            .permitAll()
-        );
-    
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                .requestMatchers("/login").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")  
+                .loginProcessingUrl("/login") 
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+            )
+            .logout(logout -> logout.permitAll());
+
         return http.build();
     }
 }
