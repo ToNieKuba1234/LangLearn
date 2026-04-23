@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'node-latest' 
-    }
-
     environment {
         NEXUS_HOST_IP = "192.168.53.53" 
         NEXUS_PORT = "8081"
