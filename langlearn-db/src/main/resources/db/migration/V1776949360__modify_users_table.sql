@@ -1,0 +1,2 @@
+ALTER TABLE users DROP COLUMN email;
+ALTER TABLE users ADD trophies INTEGER NOT NULL;

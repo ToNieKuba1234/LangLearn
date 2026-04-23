@@ -1,5 +1,7 @@
 package com.jakkas.langlearn.model;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +14,7 @@ import jakarta.persistence.Table;
 public class User {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(unique = true, nullable = false, name = "username")
     private String username;
@@ -23,6 +25,7 @@ public class User {
     @Column(name = "trophies", nullable = false)
     private Integer trophies = 0;
 
+    
 
     //username 
     public String getUsername() {
@@ -50,16 +53,18 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        User user;
-        if (obj instanceof User) { user = (User) obj; }
-        else 
-            return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User other = (User) o;
 
-        if (user.getUsername().equals(this.getUsername()) && user.getPassword().equals(this.getPassword())) {
-            return true;
-        }
+        return Objects.equals(other.id, id);
+    }
 
-        return false;
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            id
+        );
     }
 }

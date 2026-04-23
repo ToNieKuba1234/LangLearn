@@ -4,8 +4,8 @@ services:
     container_name: langlearn-db
     environment:
       POSTGRES_DB: langlearn_db
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password123
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
     ports:
       - "5432:5432"
     volumes:

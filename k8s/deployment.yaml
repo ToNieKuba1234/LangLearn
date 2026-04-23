@@ -47,6 +47,8 @@ spec:
         ports:
         - containerPort: 3000
         env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s"
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://langlearn-db-service:5432/langlearn
         - name: SPRING_DATASOURCE_USERNAME
