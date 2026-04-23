@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node-latest' 
+    }
+
     environment {
         NEXUS_HOST_IP = "192.168.53.53" 
         NEXUS_PORT = "8081"
@@ -9,55 +13,57 @@ pipeline {
     }
 
     stages {
-        stage('Compile') {
-            steps {
-                dir('langlearn-backend') {
-                    sh 'mvn clean compile'
+        stage('Maven') {
+            stages {
+                stage('Compile') {
+                    steps {
+                        dir('langlearn-backend') {
+                            sh 'mvn clean compile'
+                        }
+
+                        dir('langlearn-frontend') {
+                            sh 'mvn clean compile'
+                        }
+                    }
                 }
 
-                dir('langlearn-frontend') {
-                    sh 'mvn clean compile'
-                }
-            }
-        }
+                stage('Test') {
+                    steps {
+                        dir('langlearn-backend') {
+                            sh 'mvn test'
+                        }
 
-        stage('Test') {
-            steps {
-                dir('langlearn-backend') {
-                    sh 'mvn test'
+                        dir('langlearn-frontend') {
+                            sh 'mvn test'
+                        }
+                    }
                 }
 
-                dir('langlearn-frontend') {
-                    sh 'mvn test'
+                stage('Build TailwindCSS') {
+                    steps {
+                        dir('langlearn-frontend/src/main/resources/static') {
+                            sh "npm install"
+                            sh "npm run build"
+                            sh "rm -rf node_modules"
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Build TailwindCSS') {
-            steps {
-                dir('langlearn-frontend') {
-                    nodejs(nodeJSInstallationName: 'node-latest') {
-                        sh "npm install"
-                        sh "npm run build"
-                        sh "rm -rf node_modules"
+                stage('Build JAR') {
+                    steps {
+                        dir('langlearn-backend') {
+                            sh 'mvn package -DskipTests'
+                        }
+
+                        dir('langlearn-frontend') {
+                            sh 'mvn package -DskipTests'
+                        }
                     }
                 }
             }
         }
 
-        stage('Build JAR') {
-            steps {
-                dir('langlearn-backend') {
-                    sh 'mvn package -DskipTests'
-                }
-
-                dir('langlearn-frontend') {
-                    sh 'mvn package -DskipTests'
-                }
-            }
-        }
-
-        stage('Build & Push to Nexus') {
+        stage('Build Docker & Push to Nexus') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                     script {
