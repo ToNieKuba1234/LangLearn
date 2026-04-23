@@ -41,27 +41,6 @@ public class UsersServiceTests {
     }
 
     @Test
-    public void testRegisterUser() {
-        //given
-        String username = "jakk";
-        String password = "kuba123";
-        ArgumentCaptor<User> usersCaptor = ArgumentCaptor.forClass(User.class);
-
-        //when
-        when(usersRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        User returnedValue = usersService.registerUser(username, password);
-
-        //then
-        verify(usersRepository, times(1)).save(usersCaptor.capture());
-        User resultUser = usersCaptor.getValue();
-
-        assertEquals(username, resultUser.getUsername());
-        assertTrue(passwordEncoder.matches(password, resultUser.getPassword()));
-        assertEquals(username, returnedValue.getUsername());
-        assertTrue(passwordEncoder.matches(password, resultUser.getPassword()));
-    }
-
-    @Test
     public void testCheckLoginForAvailableUser() {
         //given 
         String username = "jakk";

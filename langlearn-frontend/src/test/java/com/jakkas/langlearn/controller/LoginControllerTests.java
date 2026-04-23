@@ -42,7 +42,7 @@ public class LoginControllerTests {
         when(restClient.authenticate(anyString(), anyString())).thenReturn(false);
         
         //when
-        String response = loginController.handleLogin("", "", null);
+        String response = loginController.handleLogin("", "", null, null);
 
         //then
         assertEquals("redirect:/login?error", response);

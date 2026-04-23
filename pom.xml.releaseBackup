@@ -3,7 +3,7 @@
 
     <groupId>com.jakkas</groupId>
     <artifactId>langlearn</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -28,7 +28,7 @@
         <connection>scm:git:git@github.com:ToNieKuba1234/LangLearn.git</connection>
         <developerConnection>scm:git:git@github.com:ToNieKuba1234/LangLearn.git</developerConnection>
         <url>https://github.com/ToNieKuba1234/LangLearn</url>
-        <tag>\</tag>
+        <tag>0.0.1</tag>
     </scm>
 
     <distributionManagement>
