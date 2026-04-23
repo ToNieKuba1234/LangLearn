@@ -1,16 +1,13 @@
 package com.jakkas.langlearn.controller;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.NoSuchElementException;
 
-import javax.naming.NameNotFoundException;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.jakkas.langlearn.dto.User;
 import com.jakkas.langlearn.restclient.UsersRestClient;

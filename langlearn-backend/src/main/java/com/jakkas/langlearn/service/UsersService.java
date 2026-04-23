@@ -18,14 +18,6 @@ public class UsersService {
         this.usersRepository = userRepository;
     }
 
-    public User registerUser(String username, String rawPassword) {
-        String hashedPassword = passwordEncoder.encode(rawPassword);
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setPassword(hashedPassword);
-        return usersRepository.save(newUser);
-    }
-
     public boolean checkLogin(String username, String rawPassword) {
         Optional<User> userOpt = usersRepository.findByUsername(username);
         if (userOpt.isPresent()) {
@@ -33,5 +25,15 @@ public class UsersService {
             return passwordEncoder.matches(rawPassword, user.getPassword());
         }
         return false;
+    }
+
+    public boolean registerUser(User user) {
+        if (usersRepository.findByUsername(user.getUsername()).isPresent()) return false;
+
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
+        usersRepository.save(user);
+        return true;
     }
 }

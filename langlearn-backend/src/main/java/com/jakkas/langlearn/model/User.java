@@ -25,32 +25,12 @@ public class User {
     @Column(name = "trophies", nullable = false)
     private Integer trophies = 0;
 
-    
-
-    //username 
-    public String getUsername() {
-        return username; 
-    }
-    public void setUsername(String username) {
-        this.username = username; 
-    }
-
-    
-    //password
-    public String getPassword() {
-        return password;   
-    }
-    public void setPassword(String password) {
-        this.password = password; 
-    }
-
-    //trophies
-    public Integer getTrophies() {
-        return trophies;
-    }
-    public void setTrophies(int trophies) {
-        this.trophies = trophies;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public Integer getTrophies() { return trophies; }
+    public void setTrophies(Integer trophies) { this.trophies = trophies; }
 
     @Override
     public boolean equals(Object o) {

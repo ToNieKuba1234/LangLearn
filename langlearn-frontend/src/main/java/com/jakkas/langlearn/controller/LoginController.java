@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.jakkas.langlearn.restclient.UsersRestClient;
 
@@ -25,14 +26,13 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String showLoginPage() {
-        return "login";
-    }
+    public String showLoginPage() {return "login"; }
 
     @PostMapping("/process-login")
     public String handleLogin(@RequestParam String username, 
                               @RequestParam String password, 
-                              HttpServletRequest request) {
+                              HttpServletRequest request,
+                              RedirectAttributes redirectAttributes) {
         System.out.println("DEBUG: Attempted to log in: " + username);
         
         if (restClient.authenticate(username, password)) {
@@ -45,6 +45,7 @@ public class LoginController {
             System.out.println("DEBUG: Session created, redirecting to /");
             return "redirect:/";
         }
+        redirectAttributes.addFlashAttribute("errorMessage", "Nieprawidłowa nazwa użytkownika lub hasło");
         return "redirect:/login?error";
     }
 }

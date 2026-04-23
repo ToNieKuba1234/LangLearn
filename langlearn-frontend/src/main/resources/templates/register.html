@@ -2,29 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Logowanie</title>
+    <title>Rejestracja</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     <div class="flex flex-col justify-center items-center h-screen bg-[#FAFAFA]">
-        <form th:action="@{/process-login}" method="post" class="flex flex-col justify-around items-center w-3/4 h-3/5 rounded-2xl shadow-2xl bg-white lg:w-1/2 xl:w-2/5">
+        <form th:action="@{/process-register}" method="post" class="flex flex-col justify-around items-center w-3/4 h-3/5 rounded-2xl shadow-2xl bg-white lg:w-1/2 xl:w-2/5">
             <h2 class="font-bold text-4xl text-center m-4 md:text-5xl">Lang Learn</h2>
             <div class="flex flex-col items-center w-3/4">
                 <input type="text" name="username" class="border border-black m-4 p-4 rounded-xl w-full text-xl" placeholder="Nazwa Użytkownika"/>
                 <input type="password" name="password" class="border border-black m-4 p-4 rounded-xl w-full text-xl" placeholder="Hasło"/>
-                <div th:if="${errorMessage}"  class="text-red-700 font-bold mb-[10px] text-sm">
+                <div th:if="${errorMessage}" class="text-[red] font-bold mb-[10px]">
                     <p th:text="${errorMessage}"></p>
                 </div>
             </div>
             <div class="mt-4 text-center">
                 <p class="text-sm text-gray-600">
-                    Nie masz konta? 
-                    <a href="/register" class="text-blue-500 hover:underline font-semibold">
-                        Zarejestruj się
+                    Masz już konto?
+                    <a href="/login" class="text-blue-500 hover:underline font-semibold">
+                        Zaloguj się
                     </a>
                 </p>
             </div>
-            <button type="submit" class="border p-4 rounded-xl w-2/5 font-bold text-lg cursor-pointer hover:bg-[#FAFAFA] ">Zaloguj</button>
+            <button type="submit" class="border p-4 rounded-xl w-2/5 font-bold text-lg cursor-pointer hover:bg-[#FAFAFA] ">Zarajestruj</button>
         </form>
     </div>
 </body>

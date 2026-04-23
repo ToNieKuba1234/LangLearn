@@ -40,14 +40,29 @@ public class BackendUsersController {
 
     @PostMapping("/process-login")
     public ResponseEntity<Void> loginProcess(@RequestBody User loginData) {
-        System.out.println("DEBUG BACKEND: Received login request for : " + loginData.getPassword());
+        System.out.println("DEBUG: Received login request for : " + loginData.getPassword());
         boolean isAuthenticated = usersService.checkLogin(loginData.getUsername(), loginData.getPassword());
 
-        System.out.println("DEBUG BACKEND: Password verification result : " + isAuthenticated);
+        System.out.println("DEBUG: Password verification result : " + isAuthenticated);
         if (isAuthenticated) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("/process-register")
+    public ResponseEntity<String> register(@RequestBody User user) {
+        System.out.println("DEBUG : Attempting to register user : " + user.getUsername());
+
+        boolean isRegistered = usersService.registerUser(user);
+
+        if (isRegistered) {
+            System.out.println("DEBUG: Registration successful");
+            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        } else {
+            System.out.println("DEBUG: Registration failed (User exists)");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already taken");
         }
     }
 }

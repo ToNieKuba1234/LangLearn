@@ -42,4 +42,24 @@ public class UsersRestClient {
             return null;
         }
     }
+
+    public boolean register(String username, String password) {
+        try {
+            User userPaylaod = new User();
+            userPaylaod.setUsername(username);
+            userPaylaod.setPassword(password);
+
+            ResponseEntity<Void> response = restClient.post()
+                    .uri("/api/process-register")
+                    .body(userPaylaod)
+                    .retrieve()
+                    .toBodilessEntity();
+
+            System.out.println("DEBUG: Backend status response (registration) : " + response.getStatusCode());
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            System.err.println("DEBUG : Backend registration error : " + e.getMessage());
+            return false;
+        }
+    }
 }
