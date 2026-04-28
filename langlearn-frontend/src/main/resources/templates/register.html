@@ -2,30 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Rejestracja</title>
+    <title th:text="#{register.title}">Rejestracja</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div class="flex flex-col justify-center items-center h-screen bg-[#FAFAFA]">
-        <form th:action="@{/process-register}" method="post" class="flex flex-col justify-around items-center w-3/4 h-3/5 rounded-2xl shadow-2xl bg-white lg:w-1/2 xl:w-2/5">
-            <h2 class="font-bold text-4xl text-center m-4 md:text-5xl">Lang Learn</h2>
-            <div class="flex flex-col items-center w-3/4">
-                <input type="text" name="username" class="border border-black m-4 p-4 rounded-xl w-full text-xl" placeholder="Nazwa Użytkownika"/>
-                <input type="password" name="password" class="border border-black m-4 p-4 rounded-xl w-full text-xl" placeholder="Hasło"/>
-                <div th:if="${errorMessage}" class="text-[red] font-bold mb-[10px]">
-                    <p th:text="${errorMessage}"></p>
-                </div>
+
+<div class="flex flex-col justify-center items-center h-screen bg-[#FAFAFA]">
+    <form method="get" id="langForm" class="absolute top-4 right-4 flex items-center gap-2">
+        <select name="lang"
+                onchange="this.form.submit()"
+                class="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xl cursor-pointer">
+            <option value="en" th:selected="${#locale.language == 'en'}">🇬🇧</option>
+            <option value="pl" th:selected="${#locale.language == 'pl'}">🇵🇱</option>
+            <option value="de" th:selected="${#locale.language == 'de'}">🇩🇪</option>
+        </select>
+    </form>
+    <form th:action="@{/process-register}" method="post"
+          class="flex flex-col justify-around items-center w-3/4 h-3/5 rounded-2xl shadow-2xl bg-white lg:w-1/2 xl:w-2/5">
+        <h2 class="font-bold text-4xl text-center m-4 md:text-5xl"
+            th:text="#{app.name}">
+            Lang Learn
+        </h2>
+        <div class="flex flex-col items-center w-3/4">
+            <input type="text" name="username"
+                   class="border border-black m-4 p-4 rounded-xl w-full text-xl"
+                   th:placeholder="#{register.username}" />
+            <input type="password" name="password"
+                   class="border border-black m-4 p-4 rounded-xl w-full text-xl"
+                   th:placeholder="#{register.password}" />
+            <div th:if="${errorMessage}"
+                 class="text-red-700 font-bold mb-[10px] text-sm">
+                <p th:text="${errorMessage}"></p>
             </div>
-            <div class="mt-4 text-center">
-                <p class="text-sm text-gray-600">
-                    Masz już konto?
-                    <a href="/login" class="text-blue-500 hover:underline font-semibold">
-                        Zaloguj się
-                    </a>
-                </p>
-            </div>
-            <button type="submit" class="border p-4 rounded-xl w-2/5 font-bold text-lg cursor-pointer hover:bg-[#FAFAFA] ">Zarajestruj</button>
-        </form>
-    </div>
+        </div>
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600"
+               th:text="#{register.has.account}">
+                Masz już konto?
+            </p>
+            <a href="/login"
+               class="text-blue-500 hover:underline font-semibold"
+               th:text="#{register.login}">
+                Zaloguj się
+            </a>
+        </div>
+        <button type="submit"
+                class="border p-4 rounded-xl w-2/5 font-bold text-lg cursor-pointer hover:bg-[#FAFAFA]"
+                th:text="#{register.button}">
+            Zarejestruj
+        </button>
+    </form>
+</div>
 </body>
 </html>

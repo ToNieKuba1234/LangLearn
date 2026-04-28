@@ -13,19 +13,42 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**");
+        return (web) -> web.ignoring().requestMatchers(
+                "/css/**",
+                "/js/**",
+                "/images/**",
+                "/webjars/**"
+        );
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
             .csrf(csrf -> csrf.disable())
+
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/process-login", "/register", "/process-register", "/css/**").permitAll()
+                .requestMatchers(
+                        "/login",
+                        "/register",
+                        "/process-login",
+                        "/process-register",
+                        "/error"
+                ).permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form.loginPage("/login").permitAll());
-        
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/process-login")
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+            );
+
         return http.build();
     }
 }

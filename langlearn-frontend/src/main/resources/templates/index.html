@@ -8,16 +8,30 @@
 <body class="min-h-screen flex flex-col font-sans">
     <header class="h-20 sm:h-24 lg:h-28 flex justify-center items-stretch border-b border-[0.5px] border-gray-200 bg-white">
         <div class="hidden sm:flex flex-1 items-center px-8 gap-3">
-            <span class="text-gray-400 font-medium uppercase tracking-widest text-xs lg:text-sm">Nick</span>
-            <span class="font-extrabold text-black text-lg lg:text-xl tracking-tight" th:text="${username}">?</span>
+            <form method="get" id="langForm">
+                <span th:text="#{label.language}"
+                    class="text-gray-400 font-medium uppercase tracking-widest text-xs lg:text-sm">
+                    Język
+                </span>
+                <select name="lang" onchange="this.form.submit()">
+                    <option value="en" th:selected="${#locale.language == 'en'}">🇬🇧</option>
+                    <option value="pl" th:selected="${#locale.language == 'pl'}">🇵🇱</option>
+                    <option value="de" th:selected="${#locale.language == 'de'}">🇩🇪</option>
+                </select>
+            </form>
+            
+            <div>
+                <span class="text-gray-400 font-medium uppercase tracking-widest text-xs lg:text-sm">Nick</span>
+                <span class="font-extrabold text-black text-lg lg:text-xl tracking-tight" th:text="${username}">?</span>
+            </div>
         </div>
 
         <button class="w-40 sm:w-56 lg:w-64 bg-white text-black font-bold tracking-[0.1dem] transition-all duration-300 hover:bg-gray-50 active:bg-gray-100 cursor-pointer border-x border-[0.5px] border-gray-200">
-            <span class="text-xl sm:text-3xl">Graj</span>
+            <span th:text="#{button.play}" class="text-xl sm:text-3xl">Graj</span>
         </button>
 
         <div class="hidden sm:flex flex-1 items-center justify-end px-8 gap-3">
-            <span class="text-gray-400 font-medium uppercase tracking-widest text-xs lg:text-sm">Pucharki</span>
+            <span th:text="#{label.trophies}" class="text-gray-400 font-medium uppercase tracking-widest text-xs lg:text-sm">Pucharki</span>
             <div class="flex items-center bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
                 <span class="font-black text-black text-lg lg:text-2xl mr-2" th:text="${trophies}">?</span>
                 <span class="text-xl lg:text-2xl">🏆</span>
@@ -26,14 +40,13 @@
     </header>
 
     <main class="flex-grow flex flex-col justify-center items-center text-center p-4">
-        <button class="p-8 border-2 rounded-lg hover:cursor-pointer" id="trigger-btn">TriggerButton!</button>
-        <h2 class="text-3xl font-bold lg:text-5xl tracking-tight text-black">Miło cie znowu widzieć!</h2>
-        <p class="mt-2 text-lg text-gray-400 lg:text-xl font-light">Kontynuuj swoją przygodę językową</p>
+        <h2 th:text="#{home.welcome}" class="text-3xl font-bold lg:text-5xl tracking-tight text-black">Miło cie znowu widzieć!</h2>
+        <p th:text="#{home.subtitle}" class="mt-2 text-lg text-gray-400 lg:text-xl font-light">Kontynuuj swoją przygodę językową</p>
     </main>
 
-    <footer class="bg-black text-white p-6">
-        <p class="text-center text-xs md:text-sm tracking-widest text-gray-400">&copy; LANGLEARN BY JAKUB KASPRZAK 2026</p>
-        <p class="text-center text-[10px] md:text-xs tracking-[0.3em] text-gray-600 mt-1v">WSZELKIE PRAWA ZASTRZEŻONE.</p>
+    <footer class="bg-black text-white p-6 pb-8">
+        <p th:text="#{footer.author}" class="text-center text-xs md:text-sm tracking-widest text-gray-400">&copy; LANGLEARN BY JAKUB KASPRZAK 2026</p>
+        <p th:text="#{footer.rights}" class="text-center text-[10px] md:text-xs tracking-[0.3em] text-gray-600 mt-1v">WSZELKIE PRAWA ZASTRZEŻONE.</p>
     </footer>
 
     <script th:src="@{/js/main.js}"></script>
